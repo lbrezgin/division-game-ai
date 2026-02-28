@@ -19,6 +19,7 @@ git checkout -b your-branch-name
 ```bash
 git status      # check changed files
 git add .       # add all files
+git commit -m "description of what have you done"
 git push origin your-branch-name
 ```
 
