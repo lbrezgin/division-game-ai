@@ -16,7 +16,7 @@ class RulesConfig:
         divisors (tuple[int,...]): Allowed divisors for valid moves.
         terminal_limit (int): Game is terminal when state.number <= this value.
         max_depth (int): Maximum minimax search depth.
-        alfa_beta_optimization (bool): Set True if you want to optimize minimax algorithm
+        alpha_beta_optimization (bool): Set True if you want to optimize minimax algorithm
                                        using alfa and beta values.
     """
     lower_bound: int
@@ -24,7 +24,7 @@ class RulesConfig:
     divisors: tuple[int,...]
     terminal_limit: int
     max_depth: int
-    alfa_beta_optimization: bool
+    alpha_beta_optimization: bool
 
 
 class GameRules:

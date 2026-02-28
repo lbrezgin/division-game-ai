@@ -16,7 +16,7 @@ class GameTree:
         self.root = root
         self.rules = rules
 
-    def minimax_alfa_beta(
+    def minimax_alpha_beta(
             self,
             node: Node,
             depth: int,
@@ -56,7 +56,7 @@ class GameTree:
             best_val = -float("inf")
 
             for child, divisor in self._get_children(node):
-                val, _ = self.minimax_alfa_beta(child, depth - 1, alpha, beta)  # evaluates the move in the long run
+                val, _ = self.minimax_alpha_beta(child, depth - 1, alpha, beta)  # evaluates the move in the long run
 
                 if val > best_val:
                     best_val = val
@@ -73,7 +73,7 @@ class GameTree:
             best_val = float("inf")
 
             for child, divisor in self._get_children(node):
-                val, _ = self.minimax_alfa_beta(child, depth - 1, alpha, beta)  # evaluates the move in the long run
+                val, _ = self.minimax_alpha_beta(child, depth - 1, alpha, beta)  # evaluates the move in the long run
 
                 if val < best_val:
                     best_val = val

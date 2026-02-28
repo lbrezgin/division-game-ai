@@ -14,7 +14,7 @@ def main():
             divisors=(2, 3, 4),
             terminal_limit=10,
             max_depth=10,
-            alfa_beta_optimization=True
+            alpha_beta_optimization=True
         )
     )
 
@@ -79,8 +79,8 @@ def main():
             tree.change_root(Node(state, []))
 
         else:
-            if tree.rules.cfg.alfa_beta_optimization:
-                best_val, best_move = tree.minimax_alfa_beta(
+            if tree.rules.cfg.alpha_beta_optimization:
+                best_val, best_move = tree.minimax_alpha_beta(
                     tree.root,
                     tree.rules.cfg.max_depth,
                     -float("inf"),
