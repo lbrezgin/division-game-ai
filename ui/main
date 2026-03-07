@@ -99,6 +99,18 @@ class GameUI:
             btn.pack(pady=3)
             self.buttons[d] = btn
 
+        self.result_label = tk.Label(self.game_frame, font=("Arial", 16), fg="red")
+        self.result_label.pack(pady=10)
+
+        self.restart_button = tk.Button(
+            self.game_frame,
+            text="Restart Game",
+            width=15,
+            command=self.restart_game
+        )
+        self.restart_button.pack(pady=10)
+        self.restart_button.pack_forget()  # Hide the button until the game ends
+
     # ------------------ HUMAN MOVE ------------------
 
     def human_move(self, divisor):
@@ -166,11 +178,15 @@ class GameUI:
         else:
             result = "Draw!"
 
-        messagebox.showinfo(
-            "Game Over",
-            f"Final Score — Human: {state.human_points} | AI: {state.computer_points}\n\n{result}"
-        )
-        self.root.destroy()
+        self.result_label.config(text=f"Game Over!\nFinal Score - Human: {state.human_points} | AI: {state.computer_points}\n{result}")
+
+        for btn in self.buttons.values():
+            btn.config(state="disabled")
+
+        self.restart_button.pack()
+
+    def restart_game(self):
+        os.execv(sys.executable, [sys.executable] + sys.argv)
 
 
 # ------------------ RUN APP ------------------
