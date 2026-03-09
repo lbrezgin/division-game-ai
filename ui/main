@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import sys
 import os
+from tkinter import ttk
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'game_tree'))
@@ -12,11 +13,12 @@ from game_tree.tree import GameTree
 from game_tree.node import Node
 from game_tree.player import Player
 
+
 class GameUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Division Game")
-        self.root.geometry("500x400")
+        self.root.geometry("500x500")
 
         self.rules = GameRules(
             config=RulesConfig(
@@ -37,19 +39,28 @@ class GameUI:
 
         self.create_start_screen()
 
+        style = ttk.Style()
+        style.theme_use("clam")   # not "calm"
+        style.configure(
+            "Rounded.TButton",
+            padding=5,
+            font=("Arial", 10)
+        )
+
     # ------------------ START SCREEN ------------------
 
     def create_start_screen(self):
         tk.Label(self.start_frame, text="Choose Starting Number",
-                 font=("Arial", 16)).pack(pady=20)
+                 font=("Comic Sans", 16)).pack(pady=20)
 
         self.start_numbers = self.rules.start_number_generator()
 
         for num in self.start_numbers:
-            tk.Button(
+            ttk.Button(
                 self.start_frame,
                 text=str(num),
                 width=20,
+                style = "Rounded.TButton",
                 command=lambda n=num: self.start_game(n)
             ).pack(pady=5)
 
@@ -85,15 +96,21 @@ class GameUI:
 
         self.ai_label = tk.Label(self.game_frame, font=("Arial", 12))
         self.ai_label.pack()
+        
+        self.ai_move_label = tk.Label(self.game_frame, font=("Arial", 12))
+        self.ai_move_label.pack(pady=5)
+        self.ai_move_label.config(text="AI chose: -")
 
         tk.Label(self.game_frame, text="Choose Divider:").pack(pady=10)
-
+        
         self.buttons = {}
         for d in self.rules.cfg.divisors:
-            btn = tk.Button(
+            
+            btn = ttk.Button(
                 self.game_frame,
                 text=f"Divide by {d}",
                 width=15,
+                style = "Rounded.TButton",
                 command=lambda div=d: self.human_move(div)
             )
             btn.pack(pady=3)
@@ -102,10 +119,11 @@ class GameUI:
         self.result_label = tk.Label(self.game_frame, font=("Arial", 16), fg="red")
         self.result_label.pack(pady=10)
 
-        self.restart_button = tk.Button(
+        self.restart_button = ttk.Button(
             self.game_frame,
             text="Restart Game",
-            width=15,
+            width=15,  
+            style = "Rounded.TButton", 
             command=self.restart_game
         )
         self.restart_button.pack(pady=10)
@@ -145,7 +163,8 @@ class GameUI:
         if best_move is None:
             self.end_game()
             return
-
+        
+        self.ai_move_label.config(text=f"AI chose: divide by {best_move}")
         new_state = self.rules.apply_move(self.tree.root.state, best_move)
         self.tree.change_root(Node(new_state, []))
         self.update_ui()
@@ -160,7 +179,8 @@ class GameUI:
         self.number_label.config(text=f"Current Number: {state.number}")
         self.human_label.config(text=f"Human: {state.human_points}")
         self.ai_label.config(text=f"AI: {state.computer_points}")
-
+        if not self.ai_move_label.cget("text"):
+            self.ai_move_label.config(text="AI chose: -")
         for d, btn in self.buttons.items():
             if state.number % d == 0:
                 btn.config(state="normal")
