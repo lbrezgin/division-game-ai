@@ -32,8 +32,12 @@ class GameUI:
         )
 
         self.tree = None
+        self.chosen_number = None
+        self.use_alpha_beta = True
+        self.game_starter = Player.HUMAN
 
         self.start_frame = tk.Frame(root)
+        self.settings_frame = tk.Frame(root)
         self.game_frame = tk.Frame(root)
         self.start_frame.pack(fill="both", expand=True)
 
@@ -65,15 +69,72 @@ class GameUI:
             ).pack(pady=5)
 
     def start_game(self, number):
+        self.chosen_number = number
         self.start_frame.pack_forget()
+        self.create_settings_screen()
+
+    # ------------------ SETTINGS SCREEN ------------------
+
+    def create_settings_screen(self):
+        self.settings_frame.pack(fill="both", expand=True)
+
+        tk.Label(self.settings_frame, text="Game Settings",
+                 font=("Comic Sans", 16)).pack(pady=20)
+
+        # Who starts
+        tk.Label(self.settings_frame, text="Who starts?",
+                 font=("Arial", 12)).pack(pady=10)
+
+        ttk.Button(
+            self.settings_frame,
+            text="Human Starts",
+            width=20,
+            style="Rounded.TButton",
+            command=lambda: self.set_starter(Player.HUMAN)
+        ).pack(pady=5)
+
+        ttk.Button(
+            self.settings_frame,
+            text="AI Starts",
+            width=20,
+            style="Rounded.TButton",
+            command=lambda: self.set_starter(Player.COMPUTER)
+        ).pack(pady=5)
+
+        # Algorithm
+        tk.Label(self.settings_frame, text="Choose Algorithm",
+                 font=("Arial", 12)).pack(pady=10)
+
+        ttk.Button(
+            self.settings_frame,
+            text="Minimax",
+            width=20,
+            style="Rounded.TButton",
+            command=lambda: self.set_algorithm(False)
+        ).pack(pady=5)
+
+        ttk.Button(
+            self.settings_frame,
+            text="Alpha-Beta Pruning",
+            width=20,
+            style="Rounded.TButton",
+            command=lambda: self.set_algorithm(True)
+        ).pack(pady=5)
+
+    def set_starter(self, player):
+        self.game_starter = player
+
+    def set_algorithm(self, use_alpha_beta):
+        self.use_alpha_beta = use_alpha_beta
+        self.settings_frame.pack_forget()
 
         self.tree = GameTree(
             root=Node(
                 state=State(
-                    number=number,
+                    number=self.chosen_number,
                     human_points=0,
                     computer_points=0,
-                    turn=Player.HUMAN
+                    turn=self.game_starter
                 ),
                 children=[]
             ),
@@ -82,6 +143,11 @@ class GameUI:
 
         self.create_game_screen()
         self.update_ui()
+        
+        # If AI starts, make the first move
+        if self.game_starter == Player.COMPUTER:
+            self.root.after(500, self.ai_move)
+
 
     # ------------------ GAME SCREEN ------------------
 
@@ -150,7 +216,7 @@ class GameUI:
     # ------------------ AI MOVE ------------------
 
     def ai_move(self):
-        if self.rules.cfg.alpha_beta_optimization:
+        if self.use_alpha_beta:
             _, best_move = self.tree.minimax_alpha_beta(
                 self.tree.root,
                 self.rules.cfg.max_depth,

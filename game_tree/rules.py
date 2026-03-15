@@ -93,8 +93,7 @@ class GameRules:
         Returns:
             State: New game state after applying the move.
         """
-        effect = (state.number % 1000) // 100
-        new_number = state.number // divisor - effect
+        new_number = state.number // divisor
 
         even = (new_number % 2 == 0)
 
