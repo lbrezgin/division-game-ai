@@ -1,11 +1,32 @@
 # 4_PR1_Riga_O365G
 
-### Papildu prasības programmatūrai 
+### Satura rādītājs
+1. [Spēles apraksts](docs/game_description.md) 
+2. [Uzdevuma nostādne](docs/task_description.md)
+3. [Mākslīgā intelekta rīku izmantošana](docs/ai_using.md)
+4. [Prasības atskaitei](docs/report_requirements.md)
+5. [Nodošana un aizstāvēšana](docs/submission_and_defense.md)
+6. [Vērtēšana](docs/grading.md)
 
-Spēles sākumā spēles programmatūra gadījuma ceļā saģenerē 5 skaitļus diapazonā no 20000 līdz 30000, bet tādus, kas sākotnēji dalās ar 3, 2 un 4. Cilvēks-spēlētājs izvēlas, ar kuru no saģenerētajiem skaitļiem viņš vēlas sākt spēli. 
+### Atskaite 
+* [Saite uz atskaiti](https://rtucloud1-my.sharepoint.com/my?id=%2Fpersonal%2Flevs%5Fbrezgins%5Fedu%5Frtu%5Flv%2FDocuments%2F4%5FPR1%5FRiga%5FO365G&viewid=acca6959%2D07a7%2D4efe%2D8c67%2De4f4b733cf05)
 
-### Spēles apraksts 
-Spēles sākumā ir dots cilvēka-spēlētāja izvēlētais skaitlis. Abiem spēlētājiem ir 0 punktu. Spēlētāji izdara gājienus pēc kārtas, katrā gājienā dalot pašreizējā brīdī esošu skaitli ar 2,3 vai 4. Skaitli ir iespējams sadalīt tikai tajā gadījumā, ja rezultātā veidojas vesels skaitlis. Ja dalīšanas rezultātā veidojas pāra skaitlis, tad no pretinieka punktiem tiek atņemts 1 punkts, ja nepāra skaitlis, tad paša spēlētāja punkti tiek palielināti par 1 punktu. Spēle beidzas, kā tikko ir iegūts skaitlis, kas ir mazāks vai vienāds ar 10. Ja spēlētāju punktu skaits ir vienāds, tad rezultāts ir neizšķirts. Pretējā gadījumā uzvar spēlētājs, kam ir vairāk punktu. 
+### Izmaiņas spēles sakumā noteikumos
+Problēma:
+* Spēles procesā var rasties situācija, kad jaunā stāvokļa iegūtais skaitlis vairs nedalās uz 2, 3, 4.
+Šajā situācijā, spēlē nemainot pamatnoteikumus, spēle beidzas, un beigu skaitlis var būt
+krietni lielāks par 10, kas ir pretrunā ar spēles nosacījumiem (spēle beidzas, kad sākuma skaitlis ir <= 10).
+Kā arī spēles koks nav ļoti dziļš, kas principā var atļaut to pilnībā ģenerēt.
+
+Risinājums:
+* Pievienot papildus loģiku, kas nodrošina skaitļa pārveidošanu gadījumā, ja tas ir >= 10
+un nedalās ne ar 2, ne ar 3 un ne ar 4. Nosauksim to par skaitļa “normalizāciju”. Šis risinājums
+ļauj mums sasniegt skaitli 10 un beigt spēli šajā gadījumā, kā arī spēles koks sanāks krietni lielāks,
+kas arī nodrošina spēles sarežģīšanu.	
+* Svarīgi ir šādi momenti:
+    * Punkti tiek pieskaitīti, balstoties uz skaitli *PIRMS* normalizācijas. Piemēram, cilvēks dala skaitli un sanāk
+skaitlis 2209, kas nedalās ar 2, 3 vai 4. Tā kā tas ir nepāra skaitlis, pēc spēles pamatnoteikumiem
+cilvēka punkti tiek palielināti par 1, un pēc tam skaitlis tiek normalizēts līdz 2210. 
 
 ### Git Workflow
 ```bash

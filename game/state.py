@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from player import Player
+from .player import Player
 
 @dataclass(frozen=True)
 class State:
