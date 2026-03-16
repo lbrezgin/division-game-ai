@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from state import State
+from .state import State
 
 @dataclass
 class Node:

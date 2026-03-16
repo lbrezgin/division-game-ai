@@ -1,8 +1,8 @@
 import random
 from dataclasses import dataclass
 
-from state import State
-from player import Player
+from .state import State
+from .player import Player
 
 @dataclass(frozen=True)
 class RulesConfig:
@@ -81,8 +81,7 @@ class GameRules:
 
         return True
 
-    @staticmethod
-    def apply_move(state: State, divisor: int) -> State:
+    def apply_move(self, state: State, divisor: int) -> State:
         """
         Applies a move to the given state and returns a new state.
 
@@ -114,10 +113,13 @@ class GameRules:
                 computer_points += 1
             next_turn = Player.HUMAN
 
-        return State(new_number, human_points, computer_points, next_turn)
+        # We don't normalize number, if it is under the terminal limit.
+        if new_number <= self.cfg.terminal_limit:
+            return State(new_number, human_points, computer_points, next_turn)
+        else:
+            return State(self._normalize(new_number), human_points, computer_points, next_turn)
 
-    @staticmethod
-    def evaluate(state: State) -> int:
+    def evaluate(self, state: State) -> int:
         """
         Evaluates the given state from the computer's perspective.
 
@@ -127,4 +129,30 @@ class GameRules:
         Returns:
             int: Heuristic score of the state.
         """
-        return state.computer_points - state.human_points
+
+        score_diff = state.computer_points - state.human_points
+        mobility = sum(state.number % d == 0 for d in self.cfg.divisors)
+
+        return 8 * score_diff + 2 * mobility
+
+    def _normalize(self, num: int) -> int:
+        """
+        Normalizes a number so that it becomes divisible by at least one
+        allowed divisor defined in the configuration.
+
+        If the given number is not divisible by any of the allowed divisors,
+        the function increases the number until such a value is found.
+        The original number is returned if it is already divisible by one of the allowed divisors.
+
+        Parameters:
+            num (int): Number that should be normalized.
+
+        Returns:
+            int: The nearest number greater than or equal to the input value
+            that is divisible by at least one divisor from cfg.divisors.
+        """
+        while True:
+            for d in self.cfg.divisors:
+                if num % d == 0:
+                    return num
+            num += 1

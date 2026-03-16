@@ -1,8 +1,9 @@
 from typing import Optional
 
-from node import Node
-from rules import GameRules
-from player import Player
+from .node import Node
+from .rules import GameRules
+from .player import Player
+from .metrics import Metrics
 
 class GameTree:
     """
@@ -11,10 +12,17 @@ class GameTree:
     Attributes:
         root (Node): Root node of the game tree.
         rules (GameRules): Rule set and evaluation logic used by the search.
+        metrics (Metrics): Metrics related to game tree (generated, evaluated node count)
     """
-    def __init__(self, root: Node, rules: GameRules) -> None:
+    def __init__(
+            self,
+            root: Node,
+            rules: GameRules,
+            metrics: Metrics
+    ) -> None:
         self.root = root
         self.rules = rules
+        self.metrics = metrics
 
     def minimax_alpha_beta(
             self,
@@ -49,6 +57,7 @@ class GameTree:
                              the node is terminal or `depth == 0`.
         """
         if self.rules.is_terminal(node.state) or depth == 0:
+            self.metrics.evaluated_node_count += 1
             return self.rules.evaluate(node.state), None
 
         best_move = None
@@ -109,6 +118,7 @@ class GameTree:
                              if the position is terminal or depth == 0.
         """
         if self.rules.is_terminal(node.state) or depth == 0:
+            self.metrics.evaluated_node_count += 1
             return self.rules.evaluate(node.state), None
 
         best_move = None
@@ -208,5 +218,6 @@ class GameTree:
             if node.state.number % divisor == 0:
                 new_state = self.rules.apply_move(node.state, divisor)
                 new_node = Node(new_state, [])
+                self.metrics.generated_node_count += 1
                 node.children.append((new_node, divisor))
         return node.children
