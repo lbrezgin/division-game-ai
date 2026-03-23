@@ -17,6 +17,7 @@ class GameUI:
         self.root = root
         self.root.title("Division Game")
         self.root.geometry("500x500")
+        
 
         self.rules = GameRules(
             config=RulesConfig(
@@ -33,6 +34,8 @@ class GameUI:
         self.chosen_number = None
         self.use_alpha_beta = True
         self.game_starter = Player.HUMAN
+        self.ai_thinking = False
+        self.stats_visible = False
 
         self.start_frame = tk.Frame(root)
         self.settings_frame = tk.Frame(root)
@@ -146,7 +149,17 @@ class GameUI:
 
         self.create_game_screen()
         self.update_ui()
-        
+    def disable_move_buttons(self):
+        for btn in self.buttons.values():
+            btn.config(state="disabled")
+
+    def enable_move_buttons(self):
+        state = self.tree.root.state
+        for d, btn in self.buttons.items():
+            if state.number % d == 0:
+                btn.config(state="normal")
+            else:
+                btn.config(state="disabled")
         # If AI starts, make the first move
         if self.game_starter == Player.COMPUTER:
             self.root.after(500, self.ai_move)
@@ -157,14 +170,18 @@ class GameUI:
     def create_game_screen(self):
         self.game_frame.pack(fill="both", expand=True)
 
+        self.stats_button = ttk.Button(
+            self.game_frame,
+            text="Show Statistics",
+            width=20,
+            style="Rounded.TButton",
+            command=self.toggle_statistics
+)
+        self.stats_button.pack(pady=5)
+
         self.generated_node_count_label = tk.Label(self.game_frame, font=("Arial", 14))
-        self.generated_node_count_label.pack()
-
         self.evaluated_node_count_label = tk.Label(self.game_frame, font=("Arial", 14))
-        self.evaluated_node_count_label.pack()
-
         self.time_used_to_make_ai_move_label = tk.Label(self.game_frame, font=("Arial", 14))
-        self.time_used_to_make_ai_move_label.pack()
 
         self.number_label = tk.Label(self.game_frame, font=("Arial", 14))
         self.number_label.pack(pady=10)
@@ -206,10 +223,25 @@ class GameUI:
         )
         self.restart_button.pack(pady=10)
         self.restart_button.pack_forget()  # Hide the button until the game ends
-
+    def toggle_statistics(self):
+            if self.stats_visible:
+                self.generated_node_count_label.pack_forget()
+                self.evaluated_node_count_label.pack_forget()
+                self.time_used_to_make_ai_move_label.pack_forget()
+                self.stats_button.config(text="Show Statistics")
+                self.stats_visible = False
+            else:
+                self.generated_node_count_label.pack()
+                self.evaluated_node_count_label.pack()
+                self.time_used_to_make_ai_move_label.pack()
+                self.stats_button.config(text="Hide Statistics")
+                self.stats_visible = True
     # ------------------ HUMAN MOVE ------------------
 
     def human_move(self, divisor):
+
+        if self.ai_thinking:
+            return
         state = self.tree.root.state
 
         if state.number % divisor != 0:
@@ -222,12 +254,18 @@ class GameUI:
         if self.rules.is_terminal(self.tree.root.state):
             self.end_game()
             return
-
+        self.ai_thinking = True
+        self.ai_move_label.config(text="AI is thinking...")
+        self.disable_move_buttons()
+        self.root.update_idletasks()
         self.root.after(500, self.ai_move)
 
     # ------------------ AI MOVE ------------------
 
     def ai_move(self):
+
+        self.ai_thinking = True
+        self.update_ui()
         start_time = time.perf_counter()
 
         if self.use_alpha_beta:
@@ -252,6 +290,9 @@ class GameUI:
         self.tree.change_root(Node(new_state, []))
         self.update_ui()
 
+        self.ai_thinking = False
+        self.update_ui()
+
         if self.rules.is_terminal(self.tree.root.state):
             self.end_game()
 
@@ -267,12 +308,10 @@ class GameUI:
         self.ai_label.config(text=f"AI: {state.computer_points}")
         if not self.ai_move_label.cget("text"):
             self.ai_move_label.config(text="AI chose: -")
-        for d, btn in self.buttons.items():
-            if state.number % d == 0:
-                btn.config(state="normal")
-            else:
-                btn.config(state="disabled")
-
+        if self.ai_thinking:
+            self.disable_move_buttons()
+        else:
+            self.enable_move_buttons()
     # ------------------ GAME OVER ------------------
 
     def end_game(self):
