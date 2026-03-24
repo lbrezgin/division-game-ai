@@ -149,6 +149,11 @@ class GameUI:
 
         self.create_game_screen()
         self.update_ui()
+
+        # If AI starts, make the first move
+        if self.game_starter == Player.COMPUTER:
+            self.root.after(500, self.ai_move)
+
     def disable_move_buttons(self):
         for btn in self.buttons.values():
             btn.config(state="disabled")
@@ -160,10 +165,6 @@ class GameUI:
                 btn.config(state="normal")
             else:
                 btn.config(state="disabled")
-        # If AI starts, make the first move
-        if self.game_starter == Player.COMPUTER:
-            self.root.after(500, self.ai_move)
-
 
     # ------------------ GAME SCREEN ------------------
 
