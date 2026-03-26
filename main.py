@@ -143,7 +143,8 @@ class GameUI:
             metrics=Metrics(
                 generated_node_count=0,
                 evaluated_node_count=0,
-                time_used_to_make_ai_move=0
+                total_ai_move_time=0,
+                ai_move_count=0
             )
         )
 
@@ -280,11 +281,13 @@ class GameUI:
             _, best_move = self.tree.minimax(self.tree.root, self.rules.cfg.max_depth)
 
         end_time = time.perf_counter()
-        self.tree.metrics.time_used_to_make_ai_move = end_time - start_time
 
         if best_move is None:
             self.end_game()
             return
+
+        self.tree.metrics.total_ai_move_time += end_time - start_time
+        self.tree.metrics.ai_move_count += 1
 
         self.ai_move_label.config(text=f"AI chose: divide by {best_move}")
         new_state = self.rules.apply_move(self.tree.root.state, best_move)
@@ -303,7 +306,9 @@ class GameUI:
         state = self.tree.root.state
         self.generated_node_count_label.config(text=f"Generated nodes (whole game): {self.tree.metrics.generated_node_count}")
         self.evaluated_node_count_label.config(text=f"Evaluated nodes (whole game): {self.tree.metrics.evaluated_node_count}")
-        self.time_used_to_make_ai_move_label.config(text=f"AI move time (current move): {self.tree.metrics.time_used_to_make_ai_move}")
+        self.time_used_to_make_ai_move_label.config(
+            text=f"Average AI move time (whole game): {self.tree.metrics.average_ai_move_time:.6f} s"
+        )
         self.number_label.config(text=f"Current Number: {state.number}")
         self.human_label.config(text=f"Human: {state.human_points}")
         self.ai_label.config(text=f"AI: {state.computer_points}")
