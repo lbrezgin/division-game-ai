@@ -12,6 +12,7 @@
 * [Saite uz atskaiti](https://rtucloud1-my.sharepoint.com/my?id=%2Fpersonal%2Flevs%5Fbrezgins%5Fedu%5Frtu%5Flv%2FDocuments%2F4%5FPR1%5FRiga%5FO365G&viewid=acca6959%2D07a7%2D4efe%2D8c67%2De4f4b733cf05)
 
 ### Izmaiņas spēles sakumā noteikumos
+#### 1.
 Problēma:
 * Spēles procesā var rasties situācija, kad jaunā stāvokļa iegūtais skaitlis vairs nedalās uz 2, 3, 4.
 Šajā situācijā, spēlē nemainot pamatnoteikumus, spēle beidzas, un beigu skaitlis var būt
@@ -27,6 +28,8 @@ kas arī nodrošina spēles sarežģīšanu.
     * Punkti tiek pieskaitīti, balstoties uz skaitli *PIRMS* normalizācijas. Piemēram, cilvēks dala skaitli un sanāk
 skaitlis 2209, kas nedalās ar 2, 3 vai 4. Tā kā tas ir nepāra skaitlis, pēc spēles pamatnoteikumiem
 cilvēka punkti tiek palielināti par 1, un pēc tam skaitlis tiek normalizēts līdz 2210. 
+#### 2. 
+* Skaitļu diapazons tiek mainīts uz 2000000 līdz 3000000
 
 ### Git Workflow
 ```bash
