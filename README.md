@@ -29,7 +29,7 @@ kas arī nodrošina spēles sarežģīšanu.
 skaitlis 2209, kas nedalās ar 2, 3 vai 4. Tā kā tas ir nepāra skaitlis, pēc spēles pamatnoteikumiem
 cilvēka punkti tiek palielināti par 1, un pēc tam skaitlis tiek normalizēts līdz 2210. 
 #### 2. 
-* Skaitļu diapazons tiek mainīts uz 2000000 līdz 3000000
+* Skaitļu diapazons tiek mainīts uz 200000 līdz 500000
 
 ### Git Workflow
 ```bash

@@ -21,8 +21,8 @@ class GameUI:
 
         self.rules = GameRules(
             config=RulesConfig(
-                lower_bound=20000,
-                upper_bound=30000,
+                lower_bound=200000,
+                upper_bound=500000,
                 divisors=(2, 3, 4),
                 terminal_limit=10,
                 max_depth=10,
