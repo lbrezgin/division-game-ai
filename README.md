@@ -1,51 +1,55 @@
-# 4_PR1_Riga_O365G
+# Division Game AI
+A Python GUI strategy game built with Tkinter featuring an AI opponent powered by the [Minimax](https://en.wikipedia.org/wiki/Minimax#:~:text=A%20minimax%20algorithm%20is%20a,or%20state%20of%20the%20game.) Algorithm and [Alpha–beta](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) Pruning algorithms. The project demonstrates adversarial search, recursive game tree generation, and AI decision-making in a competitive mathematical game.
 
-### Satura rādītājs
-1. [Spēles apraksts](docs/game_description.md) 
-2. [Uzdevuma nostādne](docs/task_description.md)
-3. [Mākslīgā intelekta rīku izmantošana](docs/ai_using.md)
-4. [Prasības atskaitei](docs/report_requirements.md)
-5. [Nodošana un aizstāvēšana](docs/submission_and_defense.md)
-6. [Vērtēšana](docs/grading.md)
+## Game Rules
+At the start of the game, the program randomly generates `5` numbers in the range from `200000` to `500000`. Only numbers divisible by `2`, `3`, and `4` are generated. The player selects one of the generated numbers to begin the game.
 
-### Atskaite 
-* [Saite uz atskaiti](https://rtucloud1-my.sharepoint.com/my?id=%2Fpersonal%2Flevs%5Fbrezgins%5Fedu%5Frtu%5Flv%2FDocuments%2F4%5FPR1%5FRiga%5FO365G&viewid=acca6959%2D07a7%2D4efe%2D8c67%2De4f4b733cf05)
+### Gameplay
+* Both players start with `0` points
+* Players take turns
+* On each turn, the current number can be divided by:
+   * `2`
+   * `3`
+   * `4`
+* Division is allowed only if the result is an integer
 
-### Izmaiņas spēles sakumā noteikumos
-#### 1.
-Problēma:
-* Spēles procesā var rasties situācija, kad jaunā stāvokļa iegūtais skaitlis vairs nedalās uz 2, 3, 4.
-Šajā situācijā, spēlē nemainot pamatnoteikumus, spēle beidzas, un beigu skaitlis var būt
-krietni lielāks par 10, kas ir pretrunā ar spēles nosacījumiem (spēle beidzas, kad sākuma skaitlis ir <= 10).
-Kā arī spēles koks nav ļoti dziļš, kas principā var atļaut to pilnībā ģenerēt.
+### Scoring
+After division:
+* If the resulting number is even `->` the opponent loses 1 point
+* If the resulting number is odd `->` the current player gains 1 point
 
-Risinājums:
-* Pievienot papildus loģiku, kas nodrošina skaitļa pārveidošanu gadījumā, ja tas ir >= 10
-un nedalās ne ar 2, ne ar 3 un ne ar 4. Nosauksim to par skaitļa “normalizāciju”. Šis risinājums
-ļauj mums sasniegt skaitli 10 un beigt spēli šajā gadījumā, kā arī spēles koks sanāks krietni lielāks,
-kas arī nodrošina spēles sarežģīšanu.	
-* Svarīgi ir šādi momenti:
-    * Punkti tiek pieskaitīti, balstoties uz skaitli *PIRMS* normalizācijas. Piemēram, cilvēks dala skaitli un sanāk
-skaitlis 2209, kas nedalās ar 2, 3 vai 4. Tā kā tas ir nepāra skaitlis, pēc spēles pamatnoteikumiem
-cilvēka punkti tiek palielināti par 1, un pēc tam skaitlis tiek normalizēts līdz 2210. 
-#### 2. 
-* Skaitļu diapazons tiek mainīts uz 200000 līdz 500000
+### End Condition
+The game ends when the current number becomes less than or equal to 10.
 
-### Git Workflow
-```bash
-git clone repository_name
-cd 4_PR1_Riga_O365G
-git checkout -b your-branch-name
+### Winner
+* Equal points `->` draw
+* More points `->` winner
+
+## Features
+* Graphical user interface built with Tkinter
+* Human vs AI gameplay
+* Minimax algorithm implementation
+* Alpha-Beta pruning optimization
+* Recursive game tree search
+* Turn-based strategy mechanics
+
+## Technologies
+* Python
+* Tkinter
+* Object-oriented programming
+* Recursive algorithms
+* Tree data structures
+* Adversarial search
+
+## AI Algorithms
+### Minimax
+The AI evaluates future game states and chooses moves that maximize its advantage while minimizing the opponent’s best possible outcome.
+
+### Alpha-Beta Pruning
+Alpha-Beta pruning optimizes Minimax by removing branches that cannot influence the final decision, significantly improving performance.
+
+## How to Run
+
 ```
-
-* _Work on your changes, then:_
-
-```bash
-git status      # check changed files
-git add .       # add all files
-git commit -m "description of what have you done"
-git push origin your-branch-name
+python main.py
 ```
-
-* Then create a pull request from your branch to `main`, but don't merge!
-* Nice Work!!! 🎉🥳
